@@ -18,14 +18,16 @@ export class TodosController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAllTodos() {
-    return this.todosService.getAllTodos();
+  async getAllTodos(@Request() req) {
+    const userId = req.user.userId;
+    return this.todosService.getAllTodos(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getTodoById(@Param('id') id: string) {
-    return this.todosService.getTodoById(id);
+  async getTodoById(@Param('id') id: string, @Request() req) {
+    const userId = req.user.userId;
+    return this.todosService.getTodoById(id, userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -57,13 +59,16 @@ export class TodosController {
       time: string;
       icon: string;
     },
+    @Request() req,
   ) {
-    return this.todosService.updateTodo(id, body);
+    const userId = req.user.userId;
+    return this.todosService.updateTodo(id, { ...body, userId });
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async deleteTodo(@Param('id') id: string) {
-    return this.todosService.deleteTodo(id);
+  async deleteTodo(@Param('id') id: string, @Request() req) {
+    const userId = req.user.userId;
+    return this.todosService.deleteTodo(id, userId);
   }
 }

@@ -5,12 +5,12 @@ import { PrismaService } from '../prisma/prisma.service';
 export class TodosService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllTodos() {
-    return this.prisma.todo.findMany();
+  async getAllTodos(userId: string) {
+    return this.prisma.todo.findMany({ where: { userId } });
   }
 
-  async getTodoById(id: string) {
-    return this.prisma.todo.findUnique({ where: { id } });
+  async getTodoById(id: string, userId: string) {
+    return this.prisma.todo.findFirst({ where: { id, userId } });
   }
 
   async createTodo(body: {
@@ -46,21 +46,25 @@ export class TodosService {
       date: string;
       time: string;
       icon: string;
+      userId: string;
     },
   ) {
     const date = new Date(body.date);
     const isoDateTime = date.toISOString();
 
-    return this.prisma.todo.update({
-      where: { id },
+    return this.prisma.todo.updateMany({
+      where: { id, userId: body.userId },
       data: {
-        ...body,
+        title: body.title,
+        description: body.description,
         date: isoDateTime,
+        time: body.time,
+        icon: body.icon,
       },
     });
   }
 
-  async deleteTodo(id: string) {
-    return this.prisma.todo.delete({ where: { id } });
+  async deleteTodo(id: string, userId: string) {
+    return this.prisma.todo.deleteMany({ where: { id, userId } });
   }
 }
