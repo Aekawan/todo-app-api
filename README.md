@@ -3,6 +3,10 @@
 
 This is a simple Todo application built with NestJS, Prisma, and MongoDB. The application includes authentication using JWT and allows users to create, read, update, and delete todo items.
 
+## Demo
+
+- <https://todo-app-api-ochre.vercel.app>
+
 ## Prerequisites
 
 - Node.js (v18 or later)
@@ -167,7 +171,7 @@ This is a simple Todo application built with NestJS, Prisma, and MongoDB. The ap
     "description": "Description of new todo",
     "date": "2024-07-10",
     "time": "12:00",
-    "icon": "📅"
+    "icon": "shopping"
   }
   ```
 
@@ -191,7 +195,7 @@ This is a simple Todo application built with NestJS, Prisma, and MongoDB. The ap
     "description": "Updated description",
     "date": "2024-07-11",
     "time": "14:00",
-    "icon": "✏️"
+    "icon": "shopping"
   }
   ```
 
