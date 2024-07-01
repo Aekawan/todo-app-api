@@ -1,73 +1,213 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# NestJS Todo Application
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This is a simple Todo application built with NestJS, Prisma, and MongoDB. The application includes authentication using JWT and allows users to create, read, update, and delete todo items.
 
-## Description
+## Prerequisites
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js (v18 or later)
+- Docker (if you want to use Docker for running the application)
+- MongoDB (you can use MongoDB Atlas or a local MongoDB instance)
 
 ## Installation
 
-```bash
-$ npm install
-```
+1. Clone the repository:
 
-## Running the app
+   ```bash
+   git clone https://github.com/Aekawan/todo-app-api.git
+   cd todo-app-api
+   ```
 
-```bash
-# development
-$ npm run start
+2. Install dependencies:
 
-# watch mode
-$ npm run start:dev
+   ```bash
+   npm install
+   ```
 
-# production mode
-$ npm run start:prod
-```
+3. Create a `.env` file in the root directory and add the following environment variables:
 
-## Test
+   ```dotenv
+   DATABASE_URL="mongodb+srv://<username>:<password>@<cluster-url>/<database-name>?retryWrites=true&w=majority"
+   JWT_SECRET="your_secret_key"
+   ```
 
-```bash
-# unit tests
-$ npm run test
+4. Generate Prisma client:
 
-# e2e tests
-$ npm run test:e2e
+   ```bash
+   npx prisma generate
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+5. Run the application:
 
-## Support
+   ```bash
+   npm run start
+   ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+   The application should now be running at `http://localhost:4000`.
 
-## Stay in touch
+## Running with Docker
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+1. Build the Docker image:
 
-## License
+   ```bash
+   docker build -t my-nestjs-app .
+   ```
 
-Nest is [MIT licensed](LICENSE).
+2. Run the Docker container:
+
+   ```bash
+   docker run -p 4000:4000 --env-file .env my-nestjs-app
+   ```
+
+3. Alternatively, you can use Docker Compose:
+
+   ```yaml
+   version: '3.8'
+
+   services:
+     app:
+       build: .
+       ports:
+         - 4000:4000'
+       environment:
+         - DATABASE_URL=${DATABASE_URL}
+         - JWT_SECRET=${JWT_SECRET}
+       depends_on:
+         - db
+
+     db:
+       image: mongo:5
+       ports:
+         - '27017:27017'
+       environment:
+         MONGO_INITDB_ROOT_USERNAME: root
+         MONGO_INITDB_ROOT_PASSWORD: example
+       volumes:
+         - mongo-data:/data/db
+
+   volumes:
+     mongo-data:
+   ```
+
+   ```bash
+   docker-compose up --build
+   ```
+
+## API Endpoints
+
+### Authentication
+
+- **Login**
+
+  ```http
+  POST /auth/login
+  ```
+
+  **Request Body:**
+
+  ```json
+  {
+    "username": "your-email@example.com",
+    "password": "your-password"
+  }
+  ```
+
+  **Response:**
+
+  ```json
+  {
+    "userId": "user-id",
+    "access_token": "jwt-token"
+  }
+  ```
+
+### Todos
+
+- **Get all todos**
+
+  ```http
+  GET /todos
+  ```
+
+  **Headers:**
+
+  ```http
+  Authorization: Bearer <jwt-token>
+  ```
+
+- **Get a todo by ID**
+
+  ```http
+  GET /todos/:id
+  ```
+
+  **Headers:**
+
+  ```http
+  Authorization: Bearer <jwt-token>
+  ```
+
+- **Create a todo**
+
+  ```http
+  POST /todos
+  ```
+
+  **Headers:**
+
+  ```http
+  Authorization: Bearer <jwt-token>
+  ```
+
+  **Request Body:**
+
+  ```json
+  {
+    "title": "New Todo",
+    "description": "Description of new todo",
+    "date": "2024-07-10",
+    "time": "12:00",
+    "icon": "📅"
+  }
+  ```
+
+- **Update a todo**
+
+  ```http
+  PUT /todos/:id
+  ```
+
+  **Headers:**
+
+  ```http
+  Authorization: Bearer <jwt-token>
+  ```
+
+  **Request Body:**
+
+  ```json
+  {
+    "title": "Updated Todo",
+    "description": "Updated description",
+    "date": "2024-07-11",
+    "time": "14:00",
+    "icon": "✏️"
+  }
+  ```
+
+- **Delete a todo**
+
+  ```http
+  DELETE /todos/:id
+  ```
+
+  **Headers:**
+
+  ```http
+  Authorization: Bearer <jwt-token>
+  ```
+
+## Additional Notes
+
+- Ensure that your MongoDB instance is running and accessible.
+- Replace placeholders in the `.env` file with your actual MongoDB credentials and other necessary values.
