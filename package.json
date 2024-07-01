@@ -5,7 +5,9 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "node": "20.x",
   "scripts": {
+    "build:digitalocean": "npm install --production=false && prisma generate && npm run build && npm ci",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "postinstall": "prisma generate",
     "build": "prisma generate && nest build",
