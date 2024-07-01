@@ -16,16 +16,19 @@ export class TodosService {
   async createTodo(body: {
     title: string;
     description: string;
-    date: Date;
+    date: string;
     time: string;
     icon: string;
     userId: string;
   }) {
+    const date = new Date(body.date);
+    const isoDateTime = date.toISOString();
+
     return this.prisma.todo.create({
       data: {
         title: body.title,
         description: body.description,
-        date: body.date,
+        date: isoDateTime,
         time: body.time,
         icon: body.icon,
         user: {
@@ -40,12 +43,21 @@ export class TodosService {
     body: {
       title: string;
       description: string;
-      date: Date;
+      date: string;
       time: string;
       icon: string;
     },
   ) {
-    return this.prisma.todo.update({ where: { id }, data: body });
+    const date = new Date(body.date);
+    const isoDateTime = date.toISOString();
+
+    return this.prisma.todo.update({
+      where: { id },
+      data: {
+        ...body,
+        date: isoDateTime,
+      },
+    });
   }
 
   async deleteTodo(id: string) {

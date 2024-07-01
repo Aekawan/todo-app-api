@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -34,13 +35,14 @@ export class TodosController {
     body: {
       title: string;
       description: string;
-      date: Date;
+      date: string;
       time: string;
       icon: string;
-      userId: string;
     },
+    @Request() req,
   ) {
-    return this.todosService.createTodo(body);
+    const userId = req.user.userId;
+    return this.todosService.createTodo({ ...body, userId });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -51,7 +53,7 @@ export class TodosController {
     body: {
       title: string;
       description: string;
-      date: Date;
+      date: string;
       time: string;
       icon: string;
     },
