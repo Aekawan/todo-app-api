@@ -16,12 +16,18 @@ export class TodosService {
   async createTodo(body: {
     title: string;
     description: string;
+    date: Date;
+    time: string;
+    icon: string;
     userId: string;
   }) {
     return this.prisma.todo.create({
       data: {
         title: body.title,
         description: body.description,
+        date: body.date,
+        time: body.time,
+        icon: body.icon,
         user: {
           connect: { id: body.userId },
         },
@@ -29,7 +35,16 @@ export class TodosService {
     });
   }
 
-  async updateTodo(id: string, body: { title: string; description: string }) {
+  async updateTodo(
+    id: string,
+    body: {
+      title: string;
+      description: string;
+      date: Date;
+      time: string;
+      icon: string;
+    },
+  ) {
     return this.prisma.todo.update({ where: { id }, data: body });
   }
 

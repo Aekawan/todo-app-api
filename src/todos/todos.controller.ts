@@ -30,7 +30,15 @@ export class TodosController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async createTodo(
-    @Body() body: { title: string; description: string; userId: string },
+    @Body()
+    body: {
+      title: string;
+      description: string;
+      date: Date;
+      time: string;
+      icon: string;
+      userId: string;
+    },
   ) {
     return this.todosService.createTodo(body);
   }
@@ -39,7 +47,14 @@ export class TodosController {
   @Put(':id')
   async updateTodo(
     @Param('id') id: string,
-    @Body() body: { title: string; description: string },
+    @Body()
+    body: {
+      title: string;
+      description: string;
+      date: Date;
+      time: string;
+      icon: string;
+    },
   ) {
     return this.todosService.updateTodo(id, body);
   }
