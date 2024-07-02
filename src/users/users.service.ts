@@ -29,4 +29,15 @@ export class UsersService {
       },
     });
   }
+
+  async getUser(userId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        password: false,
+      },
+    });
+  }
 }
